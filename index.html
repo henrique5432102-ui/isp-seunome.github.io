@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISP — Inteligência Artificial</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #171717;
+      color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 18px 25px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo {
+      background: #d8c4ff;
+      color: #21152e;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    header h2 { margin: 0; }
+    main {
+      width: min(760px, 100%);
+      margin: auto;
+      padding: 35px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    #welcome {
+      text-align: center;
+      margin: auto 0 30px;
+    }
+    #welcome .logo {
+      margin: 0 auto 20px;
+      width: 60px;
+      height: 60px;
+      font-size: 30px;
+    }
+    h1 { font-size: 34px; margin-bottom: 12px; }
+    .muted { color: #aaa; line-height: 1.6; }
+    #messages {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      margin-bottom: 20px;
+    }
+    .message { line-height: 1.6; overflow-wrap: anywhere; }
+    .message strong { color: #d8c4ff; }
+    form {
+      background: #252525;
+      border: 1px solid #414141;
+      border-radius: 18px;
+      padding: 12px;
+    }
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 55px;
+      max-height: 160px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      font: inherit;
+      font-size: 16px;
+    }
+    .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .bottom small { color: #999; }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 15px;
+      font-weight: bold;
+    }
+    #send {
+      background: #d8c4ff;
+      color: #21152e;
+      font-size: 20px;
+    }
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .suggestions button {
+      background: #252525;
+      border: 1px solid #444;
+      color: #eee;
+    }
+    footer {
+      color: #888;
+      font-size: 12px;
+      text-align: center;
+      padding: 18px;
+    }
+    @media (max-width: 500px) {
+      h1 { font-size: 27px; }
+      main { padding: 25px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">I</div>
+    <h2>ISP</h2>
+    <span style="margin-left:auto;color:#aaa;font-size:12px">Protótipo</span>
+  </header>
+
+  <main>
+    <section id="welcome">
+      <div class="logo">✦</div>
+      <h1>Como posso ajudar?</h1>
+      <p class="muted">
+        Olá! Eu sou a ISP, sua assistente virtual.<br>
+        Vamos começar uma conversa?
+      </p>
+      <div class="suggestions">
+        <button type="button" data-text="Me dê ideias para um projeto.">✧ Criatividade</button>
+        <button type="button" data-text="Como aprender programação?">⌘ Programação</button>
+        <button type="button" data-text="Me ajude a estudar.">◈ Estudos</button>
+      </div>
+    </section>
+
+    <section id="messages" aria-live="polite"></section>
+
+    <form id="chat">
+      <textarea id="input" placeholder="Envie uma mensagem para a ISP..." aria-label="Mensagem"></textarea>
+      <div class="bottom">
+        <small>Enter para enviar</small>
+        <button id="send" type="submit">↑</button>
+      </div>
+    </form>
+    <p class="muted" style="font-size:11px;text-align:center">
+      Esta versão ainda usa respostas demonstrativas, não uma IA avançada.
+    </p>
+  </main>
+
+  <footer>ISP · Projeto independente</footer>
+
+  <script>
+    const form = document.getElementById("chat");
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
+    const welcome = document.getElementById("welcome");
+
+    function addMessage(who, text) {
+      welcome.style.display = "none";
+      const div = document.createElement("div");
+      div.className = "message";
+      const name = document.createElement("strong");
+      name.textContent = who + ": ";
+      const content = document.createElement("span");
+      content.textContent = text;
+      div.append(name, content);
+      messages.appendChild(div);
+      div.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+
+    function answer(text) {
+      const t = text.toLowerCase();
+      if (/^(oi|olá|ola|bom dia|boa tarde|boa noite)\b/.test(t)) {
+        return "Olá! Bem-vindo à ISP. Como posso ajudar você hoje?";
+      }
+      if (t.includes("seu nome")) {
+        return "Meu nome é ISP, sua assistente virtual.";
+      }
+      if (t.includes("programação") || t.includes("programacao")) {
+        return "Você pode começar com HTML para páginas, CSS para o visual e JavaScript para as interações. Depois podemos conectar a ISP a um modelo de IA.";
+      }
+      if (t.includes("ideia")) {
+        return "Podemos criar novas funções, personalizar meu visual ou planejar como conectar uma inteligência artificial. Qual caminho você prefere?";
+      }
+      if (t.includes("obrigado") || t.includes("obrigada")) {
+        return "Por nada! Estamos construindo a ISP passo a passo.";
+      }
+      return "Recebi sua mensagem: “" + text + "”. Ainda estou em desenvolvimento e estas respostas são demonstrativas.";
+    }
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      addMessage("Você", text);
+      input.value = "";
+      const reply = answer(text);
+      setTimeout(function() {
+        addMessage("ISP", reply);
+      }, 250);
+    });
+
+    input.addEventListener("keydown", function(event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    document.querySelectorAll("[data-text]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        input.value = button.dataset.text;
+        form.requestSubmit();
+      });
+    });
+  </script>
+</body>
+</html>
+
